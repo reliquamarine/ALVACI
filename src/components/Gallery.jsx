@@ -25,7 +25,7 @@ const galleryItems = [
 ];
 
 const GalleryCard = ({ item }) => (
-  <div className="bg-[#E8D1A7] text-center rounded-xl shadow-lg overflow-hidden flex flex-col w-98 justify-center transform hover:scale-105 transition-transform duration-300">
+  <div className="bg-[#E8D1A7] text-center rounded-xl shadow-lg overflow-hidden flex flex-col w-92 justify-center transform hover:scale-105 transition-transform duration-300">
     <div className="h-90 overflow-hidden flex justify-center mt-8">
       <img
         src={item.image}
