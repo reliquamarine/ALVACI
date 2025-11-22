@@ -1,9 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import girlWithPearl from "../assets/image 6.png";
 import theScream from "../assets/image 8.png";
 import monaLisa from "../assets/image 7.png";
 
-const galleryItems = [
+export const galleryItems = [
   {
     id: 1,
     image: girlWithPearl,
@@ -41,11 +42,15 @@ const GalleryCard = ({ item }) => (
           by {item.artist}
         </p>
       </div>
-      <a
-        className="text-sm font-medium italic text-[#442D1D] hover:text-[#6c4e3e] mb-3"
+      <Link
+        to={`/view-detail/${item.id}`}
+        aria-label={`View details for ${item.title}`}
+        className="inline-block mt-4 mb-3"
       >
-        View Details
-      </a>
+        <span className="inline-block bg-[#442D1D] text-[#E8D1A7] px-4 py-2 rounded-full text-sm font-medium hover:bg-[#6c4e3e] transition">
+          View Details
+        </span>
+      </Link>
     </div>
   </div>
 );

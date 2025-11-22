@@ -3,6 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import Beranda from "./pages/Beranda";
+import GalleryWalls from "./pages/Gallery-walls";
+import ViewDetail from "./pages/view-detail";
+import AddArtwork from "./pages/Add-artwork";
+import Profile from "./pages/Profil";
 
 function App() {
   return (
@@ -11,6 +16,11 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/beranda" element={<Beranda />} />
+        <Route path="/gallery-walls" element={<GalleryWalls />} />
+        <Route path="/view-detail/:id" element={<ViewDetail />} />
+        <Route path="/add-artwork" element={<AddArtwork />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );
