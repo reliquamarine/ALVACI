@@ -29,9 +29,9 @@ function LoginPage() {
             Login
           </button>
 
-          <p className="text-sm text-[#4A2E1E]">
-            Don’t have an account? <span className="font-bold cursor-pointer">Create an account</span>
-          </p>
+          <a href="/register" className="text-sm text-[#4A2E1E]">
+            Don't have an account? <span className="font-bold cursor-pointer">Create an account</span>
+          </a>
         </div>
       </div>
 
