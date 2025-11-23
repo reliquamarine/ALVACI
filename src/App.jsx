@@ -8,6 +8,8 @@ import GalleryWalls from "./pages/Gallery-walls";
 import ViewDetail from "./pages/view-detail";
 import AddArtwork from "./pages/Add-artwork";
 import Profile from "./pages/Profil";
+import ForgotPassPage from "./pages/forgotpass";
+import EditProfilePage from "./pages/EditProfilePage"
 
 function App() {
   return (
@@ -16,11 +18,13 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-Password" element={<ForgotPassPage />} />
         <Route path="/beranda" element={<Beranda />} />
         <Route path="/gallery-walls" element={<GalleryWalls />} />
         <Route path="/artwork/:id" element={<ViewDetail />} />
         <Route path="/add-artwork" element={<AddArtwork />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/edit-profile" element={<EditProfilePage />} />
       </Routes>
     </Router>
   );

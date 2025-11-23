@@ -68,12 +68,11 @@ function LoginPage() {
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="w-full flex flex-col gap-5"
-        >
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5">
           <div className="flex flex-col gap-1">
-            <label className="text-lg text-[#442D1D] font-semibold">Email</label>
+            <label className="text-lg text-[#442D1D] font-semibold">
+              Email
+            </label>
             <input
               type="email"
               value={email}
@@ -126,26 +125,29 @@ function LoginPage() {
 
           <button
             type="button"
-            className="self-start text-sm hover:underline text-[#442D1D] font-medium">
+            onClick={() => navigate("/forgot-password")}
+            className="self-start text-sm hover:underline text-[#442D1D] font-medium"
+          >
             Forgot Password
           </button>
 
           {error && (
             <div
               className="text-sm text-red-600 font-medium p-2 rounded text-center"
-              role="alert">
+              role="alert"
+            >
               {error}
             </div>
           )}
 
           <button
             type="submit"
-            className="py-3 rounded-full font-medium text-lg shadow-md hover:scale-[1.02] transition w-full bg-[#442D1D] text-white">
+            className="py-3 rounded-full font-medium text-lg shadow-md hover:scale-[1.02] transition w-full bg-[#442D1D] text-white"
+          >
             Login
           </button>
 
-          <p
-            className="text-sm mt-3 text-center text-[#442D1D]">
+          <p className="text-sm mt-3 text-center text-[#442D1D]">
             Don't have an account?{" "}
             <Link
               to="/register"

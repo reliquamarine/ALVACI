@@ -1,138 +1,212 @@
-// Profile.jsx (Menggunakan Tailwind CSS)
+import React, { useState, useEffect } from "react";
+import { User, Edit3 } from "lucide-react";
+import { useNavigate } from "react-router-dom"; 
 
-import React from 'react';
-
-/**
- * Data Placeholder Profil Pengguna
- */
-const userData = {
-  fullName: 'Lorem Dolot',
-  username: '@ametkece',
-  firstName: 'Lorem',
-  lastName: 'Dolot',
-  email: 'Loremkece@gmail.com',
-  artworksUploaded: 3,
-  joinedDate: 'November 2025',
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleString("id-ID", { month: "long", year: "numeric" });
 };
 
-// --- Komponen Navbar (Diambil dari komponen sebelumnya untuk konsistensi) ---
-const CustomNavbar = () => (
-    <header className="sticky top-0 z-10 flex justify-between items-center px-10 py-6 border-b border-gray-300 w-full bg-[#F4EFEB] shadow-md">
-        <div className="text-5xl font-extrabold text-[#442D1D] font-montserrat px-8">
-            Artzy
-        </div>
-        <nav className="flex items-center font-medium text-[#442D1D] px-8 text-2xl font-montserrat">
-            <a href="/beranda" className="hover:text-amber-700 transition duration-150 mr-8">Home</a>
-            <a href="/gallery-walls" className="hover:text-amber-700 transition duration-150 mr-8">Gallery Walls</a>
-            <a href="/add-artwork" className="hover:text-amber-700 transition duration-150 mr-8">Add Artwork</a>
-            <a href="/profile" className="hover:text-amber-700 transition duration-150 mr-8">Profile</a>
-        </nav>
-    </header>
-);
+const MOCK_USER_DATA = {
+  username: "Lorem Dolot",
+  email: "loremkece@gmail.com",
+  firstName: "Lorem",
+  lastName: "Dolot",
+  handle: "@ametkece",
+  joinDate: "2025-11-01T00:00:00.000Z",
+};
 
-/**
- * Komponen Profile
- */
 function Profile() {
+  const navigate = useNavigate();
+  const [profileData, setProfileData] = useState(null);
+  const [artworkCount, setArtworkCount] = useState(0);
+
+  useEffect(() => {
+    const storedGallery = localStorage.getItem("artzy_gallery");
+    const artworks = storedGallery ? JSON.parse(storedGallery) : [];
+    setArtworkCount(artworks.length);
+
+    let storedAccount = localStorage.getItem("artzy_account");
+    let user = MOCK_USER_DATA;
+
+    if (storedAccount) {
+      user = JSON.parse(storedAccount);
+
+      if (!user.firstName || !user.lastName || !user.handle || !user.joinDate) {
+        const nameParts = user.username
+          ? user.username.split(" ")
+          : ["Guest", "User"];
+        const inferredFirstName = nameParts[0];
+        const inferredLastName =
+          nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+
+        user = {
+          ...user,
+          firstName: inferredFirstName,
+          lastName: inferredLastName,
+          handle: user.email ? `@${user.email.split("@")[0]}` : "@guest",
+          joinDate: user.joinDate || new Date().toISOString(),
+        };
+
+        localStorage.setItem("artzy_account", JSON.stringify(user));
+      }
+    }
+    setProfileData(user);
+  }, []);
+
   const handleLogout = () => {
-    alert('Log Out berhasil! (Simulasi)');
-    console.log('User logged out');
-    // Di aplikasi nyata, ini akan menghapus token autentikasi dan mengarahkan ke halaman login
+    alert("Berhasil keluar!");
+    navigate("/login");
   };
 
-  return (
-    <div className="bg-[#F4EFEB] min-h-screen flex flex-col scroll-smooth">
-      
-      <CustomNavbar />
-      
-      {/* --- Bagian Utama Profil --- */}
-      <main className="flex-grow flex flex-col items-center py-12 px-10"
-            style={{ 
-                // Latar belakang gradien yang konsisten
-                background: 'linear-gradient(to bottom, #f0e6d6 0%, #d4c2a5 100%)',
-            }}
-      >
-        <div className="w-full max-w-4xl">
-          
-          {/* Judul Utama */}
-          <h1 className="text-5xl font-bold text-[#5d4037] mb-10 pt-5">
-            My Profile
-          </h1>
+  if (!profileData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F4EFEB] font-montserrat">
+        <div className="text-xl text-[#442D1D]">Loading...</div>
+      </div>
+    );
+  }
 
-          {/* Kartu 1: Info Dasar & Edit Profile */}
-          <div className="bg-[#e0d2bd] shadow-xl rounded-xl p-6 mb-8 flex items-center justify-between">
-            <div className="flex items-center">
-              {/* Ikon Profil */}
-              <div className="bg-[#5d4037] p-3 rounded-full mr-4">
-                <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                </svg>
+  return (
+    <div className="min-h-screen flex flex-col font-montserrat bg-gradient-to-b from-[#F4EFEB] to-[#C5B49A]/50">
+      <header className="sticky top-0 z-10 flex justify-between items-center px-10 py-6 border-b border-gray-300 w-full bg-[#F4EFEB] shadow-md">
+        <div className="text-4xl font-extrabold text-[#442D1D] font-montserrat px-8">
+          Artzy
+        </div>
+
+        <nav className="flex items-center font-medium text-[#442D1D] px-8 text-xl font-montserrat">
+          <a
+            href="/beranda"
+            className="hover:text-amber-700 transition duration-150 mr-8"
+          >
+            Home
+          </a>
+          <a
+            href="/gallery-walls"
+            className="hover:text-amber-700 transition duration-150 mr-8"
+          >
+            Gallery Walls
+          </a>
+          <a
+            href="/add-artwork"
+            className="hover:text-amber-700 transition duration-150 mr-8"
+          >
+            Add Artwork
+          </a>
+          <a
+            href="/profile"
+            className="font-semibold py-1.5 border border-gray-500 rounded-3xl bg-[#442D1D] text-white transition duration-200 px-8"
+          >
+            Profile
+          </a>
+        </nav>
+      </header>
+
+      <main className="flex-grow flex flex-col items-center p-8 sm:p-12 font-montserrat gallery-gradient-bg">
+        <div className="w-full max-w-4xl space-y-8">
+          <h1 className="text-4xl font-bold text-[#442D1D] mb-8">My Profile</h1>
+
+          <div className="w-full bg-white/20 backdrop-blur-md border border-white/30 rounded-[30px] p-8 flex justify-between items-center shadow-lg">
+            <div className="flex items-center space-x-6">
+              <div className="w-24 h-24 rounded-full border-4 border-white/50 shadow-sm overflow-hidden bg-[#442D1D]/10 flex items-center justify-center">
+                {profileData.profilePic ? (
+                  <img
+                    src={profileData.profilePic}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User
+                    className="w-10 h-10 text-[#442D1D]"
+                    strokeWidth={1.5}
+                  />
+                )}
               </div>
+
               <div>
-                <p className="text-2xl font-semibold text-[#5d4037]">{userData.fullName}</p>
-                <p className="text-lg text-[#795548]">{userData.username}</p>
+                <p className="text-2xl font-bold text-[#442D1D]">
+                  {profileData.firstName} {profileData.lastName}
+                </p>
+                <p className="text-lg text-[#442D1D]/70">
+                  {profileData.handle}
+                </p>
               </div>
             </div>
-            
-            <button className="bg-[#5d4037] text-white py-2 px-6 rounded-full text-lg font-semibold hover:bg-[#4e342e] transition duration-200">
-              Edit Profile
+
+            <button
+              onClick={() => navigate("/edit-profile")}
+              className="flex items-center space-x-2 bg-[#442D1D] text-white text-base font-semibold py-2 px-6 rounded-full shadow-md hover:bg-[#6c4e3e] transition duration-200"
+            >
+              <Edit3 className="w-4 h-4" />
+              <span>Edit Profile</span>
             </button>
           </div>
 
-          {/* Kartu 2: Informasi Pribadi */}
-          <div className="bg-[#e0d2bd] shadow-xl rounded-xl p-6 mb-8">
-            <h2 className="text-2xl font-bold text-[#5d4037] mb-6">Personal Information</h2>
-            
-            <div className="grid grid-cols-3 gap-8">
-              {/* Kolom First Name */}
-              <div>
-                <p className="text-xl font-semibold text-[#795548]">First Name</p>
-                <p className="text-xl text-[#5d4037]">{userData.firstName}</p>
+          <div className="w-full bg-white/20 backdrop-blur-md border border-white/30 rounded-[30px] p-10 shadow-lg relative">
+            <h3 className="text-xl font-bold text-[#442D1D] mb-6 border-b border-[#442D1D]/20 pb-2">
+              Personal Information
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold text-[#442D1D]/70 mb-1">
+                  First Name
+                </label>
+                <p className="text-lg font-medium text-[#442D1D]">
+                  {profileData.firstName || "-"}
+                </p>
               </div>
-              
-              {/* Kolom Last Name */}
-              <div>
-                <p className="text-xl font-semibold text-[#795548]">Last Name</p>
-                <p className="text-xl text-[#5d4037]">{userData.lastName}</p>
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold text-[#442D1D]/70 mb-1">
+                  Last Name
+                </label>
+                <p className="text-lg font-medium text-[#442D1D]">
+                  {profileData.lastName || "-"}
+                </p>
               </div>
-              
-              {/* Kolom Email Address */}
-              <div>
-                <p className="text-xl font-semibold text-[#795548]">Email Adress</p>
-                <p className="text-xl text-[#5d4037] truncate">{userData.email}</p>
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold text-[#442D1D]/70 mb-1">
+                  Email Address
+                </label>
+                <p className="text-lg font-medium text-[#442D1D] truncate">
+                  {profileData.email || "-"}
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Kartu 3: Ringkasan Profil */}
-          <div className="bg-[#e0d2bd] shadow-xl rounded-xl p-6 mb-12">
-            <h2 className="text-2xl font-bold text-[#5d4037] mb-6">Profile Summary</h2>
-            
-            <div className="grid grid-cols-2 gap-8">
-              {/* Kolom Artworks Uploaded */}
-              <div>
-                <p className="text-xl font-semibold text-[#795548]">Artworks Uploaded</p>
-                <p className="text-xl text-[#5d4037]">{userData.artworksUploaded}</p>
+          <div className="w-full bg-white/20 backdrop-blur-md border border-white/30 rounded-[30px] p-10 shadow-lg relative">
+            <h3 className="text-xl font-bold text-[#442D1D] mb-6 border-b border-[#442D1D]/20 pb-2">
+              Profile Summary
+            </h3>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold text-[#442D1D]/70 mb-1">
+                  Artworks Uploaded
+                </label>
+                <p className="text-2xl font-bold text-[#442D1D]">
+                  {artworkCount}
+                </p>
               </div>
-              
-              {/* Kolom Joined */}
-              <div>
-                <p className="text-xl font-semibold text-[#795548]">Joined</p>
-                <p className="text-xl text-[#5d4037]">{userData.joinedDate}</p>
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold text-[#442D1D]/70 mb-1">
+                  Joined
+                </label>
+                <p className="text-lg font-medium text-[#442D1D]">
+                  {formatDate(profileData.joinDate)}
+                </p>
               </div>
             </div>
           </div>
-          
-          {/* Tombol Log Out (Ditempatkan di kanan bawah halaman) */}
-          <div className="flex justify-end">
-            <button 
+
+          <div className="w-full flex justify-end mt-8 mb-4">
+            <button
               onClick={handleLogout}
-              className="bg-[#5d4037] text-white py-3 px-8 rounded-full text-xl font-semibold hover:bg-[#4e342e] transition duration-200"
+              className="flex items-center gap-2 bg-[#442D1D] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#2c1d13] transition shadow-lg"
             >
               Log Out
             </button>
           </div>
-          
         </div>
       </main>
     </div>
