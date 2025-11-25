@@ -113,7 +113,7 @@ function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="py-3 rounded-full font-medium text-lg shadow-md hover:scale-[1.02] transition w-full bg-[#442D1D] text-white mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="py-3 rounded-full font-medium text-lg shadow-md hover:scale-[1.02] transition w-full bg-[#442D1D] text-white mt-2 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           >
             {isLoading ? "Sending..." : "Send Reset Link"}
           </button>

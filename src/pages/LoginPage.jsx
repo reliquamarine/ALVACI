@@ -133,7 +133,7 @@ function LoginPage() {
           <button
             type="button"
             onClick={() => navigate("/forgot-password")}
-            className="self-start text-sm hover:underline text-[#442D1D] font-medium"
+            className="self-start text-sm hover:underline text-[#442D1D] font-medium cursor-pointer"
           >
             Forgot Password
           </button>

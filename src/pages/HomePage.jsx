@@ -4,6 +4,7 @@ import About from "../components/about";
 import Gallery from "../components/Gallery";
 import HowItWorks from "../components/HowItWorks";
 import GetStarted from "../components/GetStarted";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   return (
@@ -14,15 +15,35 @@ function HomePage() {
         </div>
 
         <nav className="flex items-center font-medium text-[#442D1D] px-8 text-xl font-montserrat">
-          <a href="#gallery" className="hover:text-amber-700 transition duration-150 mr-8">Gallery</a>
-          <a href="#howitworks" className="hover:text-amber-700 transition duration-150 mr-8">How It Works</a>
-          <a href="#about" className="hover:text-amber-700 transition duration-150 mr-8">About</a>
-          <a href="/login" className="font-semibold py-1.5 border border-gray-500 rounded-3xl hover:bg-[#442D1D] hover:text-white transition duration-200 px-8">Login</a>
+          <a
+            href="#gallery"
+            className="hover:text-amber-700 transition duration-150 mr-8"
+          >
+            Gallery
+          </a>
+          <a
+            href="#howitworks"
+            className="hover:text-amber-700 transition duration-150 mr-8"
+          >
+            How It Works
+          </a>
+          <a
+            href="#about"
+            className="hover:text-amber-700 transition duration-150 mr-8"
+          >
+            About
+          </a>
+          <Link
+            to="/login"
+            className="font-semibold py-1.5 border border-gray-500 rounded-3xl hover:bg-[#442D1D] hover:text-white transition duration-200 px-8"
+          >
+            Login
+          </Link>
         </nav>
       </header>
 
       <main className="flex-grow flex items-center justify-center w-full py-16">
-        <div className="flex items-center justify-start max-w-7xl w-full ml-30 mr-auto gap-10 px-10 mt-5"> 
+        <div className="flex items-center justify-start max-w-7xl w-full ml-30 mr-auto gap-10 px-10 mt-5">
           <div className="w-4/3 flex justify-end">
             <img
               src={heroImage}
@@ -30,19 +51,20 @@ function HomePage() {
               className="w-full h-auto object-cover rounded-xl"
             />
           </div>
-          
+
           <div className="w-2/3 flex flex-col item-start text-left">
             <h1 className="text-[50px] font-bold leading-snug text-[#442D1D] font-montserrat w-full">
               The Modern Way to Experience Art
             </h1>
 
-            <a href="#about" className="mt-8 px-8 py-4 bg-[#442D1D] text-[#E8D1A7] font-medium rounded-full shadow-lg hover:bg-[#886757] transition duration-200 flex items-center font-montserrat text-[24px] self-start">
+            <a
+              href="#about"
+              className="mt-8 px-8 py-4 bg-[#442D1D] text-[#E8D1A7] font-medium rounded-full shadow-lg hover:bg-[#886757] transition duration-200 flex items-center font-montserrat text-[24px] self-start"
+            >
               Explore More
               <span className="ml-3 text-2xl">→</span>
             </a>
-            
           </div>
-
         </div>
       </main>
 

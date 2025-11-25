@@ -136,7 +136,7 @@ function Profile() {
 
             <button
               onClick={() => navigate("/edit-profile")}
-              className="flex items-center space-x-2 bg-[#442D1D] text-white text-base font-semibold py-2 px-6 rounded-full shadow-md hover:bg-[#6c4e3e] transition duration-200"
+              className="flex items-center space-x-2 bg-[#442D1D] text-white text-base font-semibold py-2 px-6 rounded-full shadow-md hover:bg-[#6c4e3e] transition duration-200 cursor-pointer"
             >
               <Edit3 className="w-4 h-4" />
               <span>Edit Profile</span>
@@ -202,7 +202,7 @@ function Profile() {
           <div className="w-full flex justify-end mt-8 mb-4">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 bg-[#442D1D] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#2c1d13] transition shadow-lg"
+              className="flex items-center gap-2 bg-[#442D1D] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#2c1d13] transition shadow-lg cursor-pointer"
             >
               Log Out
             </button>

@@ -143,7 +143,7 @@ export default function EditProfilePage() {
               className="absolute bottom-0 right-0 bg-[#442D1D] text-white p-2.5 rounded-full shadow-md hover:bg-[#6c4e3e] transition hover:scale-110 z-20"
               title="Change Photo"
             >
-              <Camera className="w-5 h-5" />
+              <Camera className="w-5 h-5 cursor-pointer" />
             </button>
             <input
               type="file"
@@ -160,7 +160,7 @@ export default function EditProfilePage() {
                 className="absolute bottom-0 -left-2 bg-red-500 text-white p-2.5 rounded-full shadow-md hover:bg-red-600 transition hover:scale-110 z-20"
                 title="Remove Photo"
               >
-                <Trash2 className="w-5 h-5" />
+                <Trash2 className="w-5 h-5 cursor-pointer" />
               </button>
             )}
           </div>
@@ -236,13 +236,13 @@ export default function EditProfilePage() {
             <button
               type="button"
               onClick={() => navigate("/profile")}
-              className="text-[#442D1D]/70 font-semibold text-sm hover:text-[#442D1D] px-4 py-2"
+              className="text-[#442D1D]/70 font-semibold text-sm hover:text-[#442D1D] px-4 py-2 cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-[#442D1D] text-white px-8 py-3 rounded-xl font-bold text-sm shadow-lg hover:bg-[#2c1d13] hover:shadow-xl transform hover:-translate-y-1 transition-all flex items-center gap-2"
+              className="bg-[#442D1D] text-white px-8 py-3 rounded-xl font-bold text-sm shadow-lg hover:bg-[#2c1d13] hover:shadow-xl transform hover:-translate-y-1 transition-all flex items-center gap-2 cursor-pointer"
             >
               <Save className="w-4 h-4" />
               Save Changes
