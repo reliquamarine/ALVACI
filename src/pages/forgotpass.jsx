@@ -36,7 +36,7 @@ function ForgotPasswordPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to send reset link");
+        throw new Error(data.error || "Failed to send reset link");
       }
       setSuccessMessage("Reset link has been sent to your email!");
 

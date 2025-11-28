@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import uploadIconPlaceholder from "../assets/ep_upload-filled.svg"; 
+import uploadIconPlaceholder from "../assets/ep_upload-filled.svg";
 
 function AddArtwork() {
   const navigate = useNavigate();
@@ -32,6 +32,8 @@ function AddArtwork() {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+
     if (!imageFile || !title || !artist) {
       alert("Please upload an image and fill in Title and Artist name.");
       return;
@@ -39,26 +41,29 @@ function AddArtwork() {
 
     try {
       const base64Image = await convertToBase64(imageFile);
-      const newArtwork = {
-        id: Date.now(),
-        image: base64Image,
-        title,
-        artist,
-        year,
-        category,
-        description,
-      };
+      const res = await fetch("http://localhost:5000/api/artworks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          image: base64Image,
+          title,
+          artist,
+          year,
+          category,
+          description,
+        }),
+      });
 
-      const existingData = localStorage.getItem("artzy_gallery");
-      let gallery = existingData ? JSON.parse(existingData) : [];
-      gallery.push(newArtwork);
-      localStorage.setItem("artzy_gallery", JSON.stringify(gallery));
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to save artwork");
 
-      alert("Artwork Saved Successfully!");
+      alert("Artwork saved successfully!");
       navigate("/gallery-walls");
-    } catch (error) {
-      console.error("Error saving artwork:", error);
-      alert("Failed to save artwork.");
+    } catch (err) {
+      alert(err.message); 
     }
   };
 
@@ -78,11 +83,11 @@ function AddArtwork() {
       type: "text",
     },
     {
-      label: "Year Created", 
+      label: "Year Created",
       val: year,
       set: setYear,
       placeholder: "",
-      type: "date", 
+      type: "date",
     },
     {
       label: "Category",
@@ -102,10 +107,32 @@ function AddArtwork() {
         </div>
 
         <nav className="flex items-center font-medium text-[#442D1D] px-8 text-xl font-montserrat">
-          <Link to="/beranda" className="hover:text-amber-700 transition duration-150 mr-8">Home</Link>
-          <Link to="/gallery-walls" className="hover:text-amber-700 transition duration-150 mr-8">Gallery Walls </Link>
-          <Link to="/add-artwork" className="hover:text-amber-700 transition duration-150 mr-8">{" "}Add Artwork</Link>
-          <Link to="/profile" className="font-semibold py-1.5 border border-gray-500 rounded-3xl hover:bg-[#442D1D] hover:text-white transition duration-200 px-8">{" "}Profile</Link>
+          <Link
+            to="/beranda"
+            className="hover:text-amber-700 transition duration-150 mr-8"
+          >
+            Home
+          </Link>
+          <Link
+            to="/gallery-walls"
+            className="hover:text-amber-700 transition duration-150 mr-8"
+          >
+            Gallery Walls{" "}
+          </Link>
+          <Link
+            to="/add-artwork"
+            className="hover:text-amber-700 transition duration-150 mr-8"
+          >
+            {" "}
+            Add Artwork
+          </Link>
+          <Link
+            to="/profile"
+            className="font-semibold py-1.5 border border-gray-500 rounded-3xl hover:bg-[#442D1D] hover:text-white transition duration-200 px-8"
+          >
+            {" "}
+            Profile
+          </Link>
         </nav>
       </header>
 

@@ -7,10 +7,26 @@ function GalleryWalls() {
   const sliderRef = useRef(null);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("artzy_gallery");
-    if (storedData) {
-      setArtworks(JSON.parse(storedData));
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
     }
+
+    const fetchArtworks = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/artworks", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setArtworks(data);
+        }
+      } catch (err) {
+        console.error("Gagal ambil artworks", err);
+      }
+    };
+    fetchArtworks();
   }, []);
 
   const scrollLeft = () => {

@@ -12,7 +12,7 @@ function RegisterPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  function handleRegister(e) {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -36,17 +36,23 @@ function RegisterPage() {
       return;
     }
 
-    const newAccount = {
-      username: username,
-      email: email,
-      password: password,
-    };
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+      });
 
-    localStorage.setItem("artzy_account", JSON.stringify(newAccount));
+      const data = await response.json();
 
-    alert("Account created successfully! Please log in.");
-    navigate("/login");
-  }
+      if (!response.ok) throw new Error(data.error || "Failed to Register");
+
+      alert("Register success! Please login.");
+      navigate("/login");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <div className="flex w-screen h-screen overflow-hidden font-montserrat bg-[#F4EFEB]">

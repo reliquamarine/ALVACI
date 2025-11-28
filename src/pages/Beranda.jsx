@@ -1,22 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Beranda() {
   const [username, setUsername] = useState("User");
+
   useEffect(() => {
-    const storedData = localStorage.getItem("artzy_account");
+    const token = localStorage.getItem("token");
 
-    if (storedData) {
-      try {
-        const userData = JSON.parse(storedData);
-
-        if (userData.username) {
-          setUsername(userData.username);
-        }
-      } catch (error) {
-        console.error("Unable to get user data", error);
-      }
+    if (!token) {
+      useNavigate()("/login");
+      return;
     }
+
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setUsername(data.username || "User");
+        }
+      } catch (err) {
+        console.error("Unable to get profile!", err);
+      }
+    };
+    fetchProfile();
   }, []);
 
   return (

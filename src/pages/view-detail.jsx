@@ -5,28 +5,61 @@ function ViewDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [artwork, setArtwork] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("artzy_gallery");
-    if (storedData) {
-      const gallery = JSON.parse(storedData);
-      const foundArt = gallery.find((item) => item.id === Number(id));
-      setArtwork(foundArt);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
     }
+
+    const fetchArtwork = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/artworks/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setArtwork(data);
+        } else {
+          throw new Error(data.error || "Artwork not found!");
+        }
+      } catch (err) {
+        setError(err.message);
+        console.error("Unable to view detial artwork!", err);
+      }
+    };
+    fetchArtwork();
   }, [id]);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this artwork?")) {
-      const storedData = localStorage.getItem("artzy_gallery");
-      if (storedData) {
-        const gallery = JSON.parse(storedData);
-        const updatedGallery = gallery.filter((item) => item.id !== Number(id));
-        localStorage.setItem("artzy_gallery", JSON.stringify(updatedGallery));
-        alert("Artwork deleted successfully.");
-        navigate("/gallery-walls");
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`http://localhost:5000/api/artworks/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          alert("Artwork deleted successfully!");
+          navigate("/gallery-walls");
+        } else {
+          throw new Error("Failed to delete!");
+        }
+      } catch (err) {
+        alert(err.message);
       }
     }
   };
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F4EFEB] text-[#bfa28e]">
+        {error} - Try refreshing!
+      </div>
+    );
+  }
 
   if (!artwork)
     return (
@@ -83,7 +116,15 @@ function ViewDetail() {
                 <span className="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1">
                   Year Created
                 </span>
-                <p className="text-lg font-semibold">{artwork.year}</p>
+                <p className="text-lg font-semibold">
+                  {artwork.year
+                    ? new Date(artwork.year).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })
+                    : "-"}
+                </p>
               </div>
               <div>
                 <span className="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1">

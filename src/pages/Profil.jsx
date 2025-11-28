@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { User, Edit3 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const formatDate = (dateString) => {
   if (!dateString) return "";
   const date = new Date(dateString);
   return date.toLocaleString("id-ID", { month: "long", year: "numeric" });
-};
-
-const MOCK_USER_DATA = {
-  username: "Lorem Dolot",
-  email: "loremkece@gmail.com",
-  firstName: "Lorem",
-  lastName: "Dolot",
-  handle: "@ametkece",
-  joinDate: "2025-11-01T00:00:00.000Z",
 };
 
 function Profile() {
@@ -23,40 +14,47 @@ function Profile() {
   const [artworkCount, setArtworkCount] = useState(0);
 
   useEffect(() => {
-    const storedGallery = localStorage.getItem("artzy_gallery");
-    const artworks = storedGallery ? JSON.parse(storedGallery) : [];
-    setArtworkCount(artworks.length);
-
-    let storedAccount = localStorage.getItem("artzy_account");
-    let user = MOCK_USER_DATA;
-
-    if (storedAccount) {
-      user = JSON.parse(storedAccount);
-
-      if (!user.firstName || !user.lastName || !user.handle || !user.joinDate) {
-        const nameParts = user.username
-          ? user.username.split(" ")
-          : ["Guest", "User"];
-        const inferredFirstName = nameParts[0];
-        const inferredLastName =
-          nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
-
-        user = {
-          ...user,
-          firstName: inferredFirstName,
-          lastName: inferredLastName,
-          handle: user.email ? `@${user.email.split("@")[0]}` : "@guest",
-          joinDate: user.joinDate || new Date().toISOString(),
-        };
-
-        localStorage.setItem("artzy_account", JSON.stringify(user));
-      }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
     }
-    setProfileData(user);
+
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setProfileData(data);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const fetchArtworks = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/artworks", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setArtworkCount(data.length);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchProfile();
+    fetchArtworks();
   }, []);
 
   const handleLogout = () => {
-    alert("Berhasil keluar!");
+    localStorage.removeItem("token");
+    alert("Logout Success!");
     navigate("/login");
   };
 
@@ -76,30 +74,30 @@ function Profile() {
         </div>
 
         <nav className="flex items-center font-medium text-[#442D1D] px-8 text-xl font-montserrat">
-          <a
-            href="/beranda"
+          <Link
+            to="/beranda"
             className="hover:text-amber-700 transition duration-150 mr-8"
           >
             Home
-          </a>
-          <a
-            href="/gallery-walls"
+          </Link>
+          <Link
+            to="/gallery-walls"
             className="hover:text-amber-700 transition duration-150 mr-8"
           >
             Gallery Walls
-          </a>
-          <a
-            href="/add-artwork"
+          </Link>
+          <Link
+            to="/add-artwork"
             className="hover:text-amber-700 transition duration-150 mr-8"
           >
             Add Artwork
-          </a>
-          <a
-            href="/profile"
+          </Link>
+          <Link
+            to="/profile"
             className="font-semibold py-1.5 border border-gray-500 rounded-3xl bg-[#442D1D] text-white transition duration-200 px-8"
           >
             Profile
-          </a>
+          </Link>
         </nav>
       </header>
 
@@ -110,9 +108,9 @@ function Profile() {
           <div className="w-full bg-white/20 backdrop-blur-md border border-white/30 rounded-[30px] p-8 flex justify-between items-center shadow-lg">
             <div className="flex items-center space-x-6">
               <div className="w-24 h-24 rounded-full border-4 border-white/50 shadow-sm overflow-hidden bg-[#442D1D]/10 flex items-center justify-center">
-                {profileData.profilePic ? (
+                {profileData.profile_pic ? (
                   <img
-                    src={profileData.profilePic}
+                    src={profileData.profile_pic}
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
@@ -126,7 +124,7 @@ function Profile() {
 
               <div>
                 <p className="text-2xl font-bold text-[#442D1D]">
-                  {profileData.firstName} {profileData.lastName}
+                  {profileData.first_name} {profileData.last_name}
                 </p>
                 <p className="text-lg text-[#442D1D]/70">
                   {profileData.handle}
@@ -153,7 +151,7 @@ function Profile() {
                   First Name
                 </label>
                 <p className="text-lg font-medium text-[#442D1D]">
-                  {profileData.firstName || "-"}
+                  {profileData.first_name || "-"}
                 </p>
               </div>
               <div className="flex flex-col">
@@ -161,7 +159,7 @@ function Profile() {
                   Last Name
                 </label>
                 <p className="text-lg font-medium text-[#442D1D]">
-                  {profileData.lastName || "-"}
+                  {profileData.last_name || "-"}
                 </p>
               </div>
               <div className="flex flex-col">
@@ -193,7 +191,7 @@ function Profile() {
                   Joined
                 </label>
                 <p className="text-lg font-medium text-[#442D1D]">
-                  {formatDate(profileData.joinDate)}
+                  {formatDate(profileData.join_date)}
                 </p>
               </div>
             </div>

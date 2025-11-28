@@ -16,6 +16,12 @@ function HomePage() {
 
         <nav className="flex items-center font-medium text-[#442D1D] px-8 text-xl font-montserrat">
           <a
+            href="#about"
+            className="hover:text-amber-700 transition duration-150 mr-8"
+          >
+            About
+          </a>
+          <a
             href="#gallery"
             className="hover:text-amber-700 transition duration-150 mr-8"
           >
@@ -26,12 +32,6 @@ function HomePage() {
             className="hover:text-amber-700 transition duration-150 mr-8"
           >
             How It Works
-          </a>
-          <a
-            href="#about"
-            className="hover:text-amber-700 transition duration-150 mr-8"
-          >
-            About
           </a>
           <Link
             to="/login"

@@ -9,7 +9,7 @@ function LoginPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -18,21 +18,22 @@ function LoginPage() {
       return;
     }
 
-    const storedAccountJson = localStorage.getItem("artzy_account");
-    if (!storedAccountJson) {
-      setError("Account not registered. Please create an account first");
-      return;
-    }
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const storedAccount = JSON.parse(storedAccountJson);
-    if (email !== storedAccount.email || password !== storedAccount.password) {
-      setError("email or password you entered is incorrect");
-      return;
-    }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
 
-    alert("Login Successful!");
-    navigate("/beranda");
-  }
+      localStorage.setItem("token", data.token); // simpen token
+      navigate("/beranda");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <div className="flex w-screen h-screen overflow-hidden bg-[#F4EFEB] font-montserrat">
@@ -63,7 +64,7 @@ function LoginPage() {
           <h1 className="text-4xl font-bold text-[#442D1D]">
             Welcome to Artzy
           </h1>
-          <p className="text-lg text-[442D1D] font-semibold">
+          <p className="text-lg text-[#442D1D] font-semibold">
             Log into your account
           </p>
         </div>

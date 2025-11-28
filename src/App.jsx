@@ -18,7 +18,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgot-Password" element={<ForgotPassPage />} />
+        <Route path="/forgot-password" element={<ForgotPassPage />} />
         <Route path="/beranda" element={<Beranda />} />
         <Route path="/gallery-walls" element={<GalleryWalls />} />
         <Route path="/artwork/:id" element={<ViewDetail />} />

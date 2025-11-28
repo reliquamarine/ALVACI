@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Camera, ArrowLeft, Save, User, Trash2 } from "lucide-react"; 
+import { Camera, Save, User, Trash2 } from "lucide-react";
 
 export default function EditProfilePage() {
   const navigate = useNavigate();
@@ -9,44 +9,43 @@ export default function EditProfilePage() {
   const [photoPreview, setPhotoPreview] = useState(null);
 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     username: "",
     email: "",
-    profilePic: "",
+    profile_pic: "",
   });
 
   useEffect(() => {
-    const storedAccountJson = localStorage.getItem("artzy_account");
-    if (storedAccountJson) {
-      try {
-        const account = JSON.parse(storedAccountJson);
-
-        let initialFirstName = account.firstName || "";
-        let initialLastName = account.lastName || "";
-
-        if (!initialFirstName && account.username) {
-          const parts = account.username.split(" ");
-          initialFirstName = parts[0];
-          initialLastName = parts.slice(1).join(" ");
-        }
-
-        if (account.profilePic) {
-          setPhotoPreview(account.profilePic);
-        }
-
-        setFormData({
-          firstName: initialFirstName,
-          lastName: initialLastName,
-          username: account.username || "",
-          email: account.email || "",
-          profilePic: account.profilePic || "",
-        });
-      } catch (error) {
-        console.error("Failed to load data", error);
-      }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
     }
-    setIsLoading(false);
+
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setFormData({
+            first_name: data.first_name || "",
+            last_name: data.last_name || "",
+            username: data.username || "",
+            email: data.email || "",
+            profile_pic: data.profile_pic || "",
+          });
+          if (data.profile_pic) setPhotoPreview(data.profile_pic);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProfile();
   }, []);
 
   const handleChange = (e) => {
@@ -54,17 +53,17 @@ export default function EditProfilePage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        alert("File size is too large! Max 2MB..");
+        alert("File size too large! Max 2MB.");
         return;
       }
       const reader = new FileReader();
       reader.onloadend = () => {
         setPhotoPreview(reader.result);
-        setFormData((prev) => ({ ...prev, profilePic: reader.result }));
+        setFormData((prev) => ({ ...prev, profile_pic: reader.result }));
       };
       reader.readAsDataURL(file);
     }
@@ -76,30 +75,37 @@ export default function EditProfilePage() {
     );
 
     if (isConfirmed) {
-      setPhotoPreview(null); 
-      setFormData((prev) => ({ ...prev, profilePic: "" }));
+      setPhotoPreview(null);
+      setFormData((prev) => ({ ...prev, profile_pic: "" }));
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const oldDataString = localStorage.getItem("artzy_account");
-    let oldData = oldDataString ? JSON.parse(oldDataString) : {};
-
-    const updatedAccount = {
-      ...oldData,
-      ...formData,
-      profilePic: formData.profilePic,
-    };
+    const token = localStorage.getItem("token");
 
     try {
-      localStorage.setItem("artzy_account", JSON.stringify(updatedAccount));
-      setTimeout(() => navigate("/profile"), 100);
-    } catch (error) {
-      alert("Failed to save. The photo might be too large.");
+      const res = await fetch("http://localhost:5000/api/users/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Profile updated successfully!");
+        navigate("/profile");
+      } else {
+        throw new Error(data.error || "Failed to update profile");
+      }
+    } catch (err) {
+      alert(err.message);
     }
   };
 
@@ -118,8 +124,21 @@ export default function EditProfilePage() {
         onClick={() => navigate("/profile")}
         className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#442D1D] hover:text-[#372517] transition"
       >
-        <ArrowLeft className="w-5 h-5" />
-        <span className="font-semibold">Back to Profile</span>
+        {" "}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          className="w-6 h-5 stroke-current"
+        >
+          <path
+            d="M15.75 19.5 8.25 12l7.5-7.5"
+            fill="none"
+            strokeWidth="3.0"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span className="font-semibold cursor-pointer">Back to Profile</span>
       </button>
 
       <div className="relative z-10 w-full max-w-2xl bg-white/20 backdrop-blur-md border border-white/30 rounded-[20px] shadow-2xl pt-20 pb-10 px-8 sm:px-12 mt-10">
@@ -181,8 +200,8 @@ export default function EditProfilePage() {
               </label>
               <input
                 type="text"
-                name="firstName"
-                value={formData.firstName}
+                name="first_name"
+                value={formData.first_name}
                 onChange={handleChange}
                 className="w-full bg-[#F4EFEB]/50 border border-gray-200 rounded-xl px-4 py-3 text-[#442D1D] font-medium focus:outline-none focus:border-[#442D1D] focus:ring-1 focus:ring-[#442D1D] transition"
               />
@@ -193,8 +212,8 @@ export default function EditProfilePage() {
               </label>
               <input
                 type="text"
-                name="lastName"
-                value={formData.lastName}
+                name="last_name"
+                value={formData.last_name}
                 onChange={handleChange}
                 className="w-full bg-[#F4EFEB]/50 border border-gray-200 rounded-xl px-4 py-3 text-[#442D1D] font-medium focus:outline-none focus:border-[#442D1D] focus:ring-1 focus:ring-[#442D1D] transition"
               />
