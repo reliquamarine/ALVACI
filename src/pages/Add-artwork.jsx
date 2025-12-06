@@ -192,7 +192,7 @@ function AddArtwork() {
             ))}
 
             <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold">Description</label>
+              <label className="text-lg font-bold">Deskripsi</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
