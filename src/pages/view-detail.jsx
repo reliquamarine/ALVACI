@@ -31,11 +31,11 @@ function ViewDetail() {
         }
       } catch (err) {
         setError(err.message);
-        console.error("Unable to view detial artwork!", err);
+        console.error("Unable to view detail artwork!", err);
       }
     };
     fetchArtwork();
-  }, [id]);
+  }, [id, navigate]);
 
   const handleDelete = async () => {
     setIsDeleteModalOpen(true);
@@ -49,7 +49,7 @@ function ViewDetail() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
-        toastSuccess("Artwork succesfully deleted!");
+        toastSuccess("Artwork successfully deleted!");
         navigate("/gallery-walls");
       } else {
         const data = await res.json();
@@ -62,26 +62,31 @@ function ViewDetail() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F4EFEB] text-[#bfa28e]">
-        {error} - Try refreshing!
+      <div className="min-h-screen flex items-center justify-center bg-[#F4EFEB] text-[#442D1D] px-4">
+        <div className="text-center">
+          <p className="text-lg sm:text-xl font-medium">{error}</p>
+          <p className="text-sm sm:text-base mt-2 opacity-80">Try refreshing!</p>
+        </div>
       </div>
     );
   }
 
   if (!artwork)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F4EFEB] text-[#442D1D]">
+      <div className="min-h-screen flex items-center justify-center bg-[#F4EFEB] text-[#442D1D] text-lg sm:text-xl">
         Loading...
       </div>
     );
 
   return (
     <div className="min-h-screen flex flex-col font-montserrat">
-      <main className="flex-grow w-full px-8 py-12 gallery-gradient-bg flex flex-col items-center justify-center">
-        <div className="w-full max-w-6xl relative flex items-center justify-center mb-8">
+      <main className="flex-grow w-full px-4 sm:px-6 md:px-8 lg:px-10 py-6 sm:py-8 md:py-10 lg:py-12 gallery-gradient-bg flex flex-col items-center justify-center">
+        {/* Back Button */}
+        <div className="w-full max-w-6xl relative flex items-center justify-center mb-6 sm:mb-8">
           <Link
             to="/gallery-walls"
-            className="absolute left-0 p-3 text-[#442D1D]"
+            className="absolute left-0 p-2 sm:p-3 text-[#442D1D] hover:text-[#2c1d13] transition"
+            aria-label="Back to gallery"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -89,7 +94,7 @@ function ViewDetail() {
               viewBox="0 0 24 24"
               strokeWidth={3.0}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="w-5 h-5 sm:w-6 sm:h-6"
             >
               <path
                 strokeLinecap="round"
@@ -100,30 +105,39 @@ function ViewDetail() {
           </Link>
         </div>
 
-        <div className="bg-[#E8D1A7] rounded-[15px] p-8 md:p-12 shadow-2xl flex flex-col md:flex-row gap-10 w-full max-w-4xl items-stretch min-h-[450px]">
-          <div className="w-full md:w-1/2 flex items-center justify-center rounded-3xl p-6">
-            <div className="rounded-2xl overflow-hidden shadow-lg border-4 border-white/40 w-full max-h-[600px]">
+        {/* Artwork Detail Card */}
+        <div className="bg-[#E8D1A7] rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-[15px] p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 shadow-lg sm:shadow-xl md:shadow-2xl flex flex-col lg:flex-row gap-6 sm:gap-8 md:gap-10 w-full max-w-4xl items-stretch min-h-[300px] sm:min-h-[350px] md:min-h-[400px] lg:min-h-[450px]">
+          {/* Image Section */}
+          <div className="w-full lg:w-1/2 flex items-center justify-center rounded-xl sm:rounded-2xl md:rounded-3xl p-4 sm:p-5 md:p-6">
+            <div className="rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden shadow-lg border-2 sm:border-3 md:border-4 border-white/40 w-full h-full max-h-[400px] sm:max-h-[450px] md:max-h-[500px] lg:max-h-[600px]">
               <img
                 src={artwork.image}
                 alt={artwork.title}
-                className="w-full h-full object-contain "
+                className="w-full h-full object-contain"
+                loading="lazy"
               />
             </div>
           </div>
-          <div className="w-full md:w-1/2 flex flex-col justify-center text-[#442D1D]">
-            <div className="border-b border-[#442D1D]/20 pb-4 mb-4">
-              <h2 className="text-4xl md:text-4xl font-bold leading-tight mb-1">
+          
+          {/* Info Section */}
+          <div className="w-full lg:w-1/2 flex flex-col justify-center text-[#442D1D]">
+            {/* Title Section */}
+            <div className="border-b border-[#442D1D]/20 pb-3 sm:pb-4 mb-3 sm:mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-1 line-clamp-2">
                 {artwork.title}
               </h2>
-              <p className="text-xl italic opacity-80">by {artwork.artist}</p>
+              <p className="text-base sm:text-lg md:text-xl italic opacity-80 line-clamp-1">
+                by {artwork.artist}
+              </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 mb-6">
+            {/* Year and Category Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6 mb-4 sm:mb-5 md:mb-6">
               <div>
                 <span className="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1">
                   Year Created
                 </span>
-                <p className="text-lg font-semibold">
+                <p className="text-base sm:text-lg font-semibold">
                   {artwork.year
                     ? new Date(artwork.year).toLocaleDateString("en-GB", {
                         day: "numeric",
@@ -137,44 +151,46 @@ function ViewDetail() {
                 <span className="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1">
                   Category
                 </span>
-                <p className="text-lg font-semibold capitalize">
+                <p className="text-base sm:text-lg font-semibold capitalize line-clamp-1">
                   {artwork.category}
                 </p>
               </div>
             </div>
 
-            <div className="mb-6 flex-grow">
-              <span className="block text-xs font-bold uppercase tracking-widest opacity-60 mb-2">
+            {/* Description */}
+            <div className="mb-4 sm:mb-5 md:mb-6 flex-grow">
+              <span className="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1 sm:mb-2">
                 Description
               </span>
-              <p className="text-base leading-relaxed opacity-90">
+              <p className="text-sm sm:text-base leading-relaxed opacity-90 max-h-[120px] sm:max-h-[150px] overflow-y-auto pr-2">
                 {artwork.description || "No description provided."}
               </p>
             </div>
 
-            <div className="pt-4 mt-auto border-t border-[#442D1D]/10 flex justify-between items-center">
+            {/* Action Buttons */}
+            <div className="pt-3 sm:pt-4 mt-auto border-t border-[#442D1D]/10 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
               <button
                 onClick={() => navigate(`/edit-artwork/${artwork.id}`)}
-                className="group flex items-center gap-3 text-[#442D1D] font-bold text-base hover:text-[#2c1d13] transition w-fit cursor-pointer"
+                className="group flex items-center gap-2 sm:gap-3 text-[#442D1D] font-bold text-sm sm:text-base hover:text-[#2c1d13] transition w-full sm:w-fit cursor-pointer justify-center sm:justify-start"
               >
-                <div className="p-2 bg-[#442D1D]/10 rounded-full group-hover:bg-[#442D1D]/20 transition">
-                  <Edit3 className="w-4 h-4" />
+                <div className="p-1.5 sm:p-2 bg-[#442D1D]/10 rounded-full group-hover:bg-[#442D1D]/20 transition">
+                  <Edit3 className="w-3 h-3 sm:w-4 sm:h-4" />
                 </div>
                 <span>Edit Artwork</span>
               </button>
 
               <button
                 onClick={handleDelete}
-                className="group flex items-center gap-3 text-red-800 font-bold text-base hover:text-red-600 transition w-fit cursor-pointer"
+                className="group flex items-center gap-2 sm:gap-3 text-red-800 font-bold text-sm sm:text-base hover:text-red-600 transition w-full sm:w-fit cursor-pointer justify-center sm:justify-end"
               >
-                <div className="p-2 bg-red-800/10 rounded-full group-hover:bg-red-800/20 transition">
+                <div className="p-1.5 sm:p-2 bg-red-800/10 rounded-full group-hover:bg-red-800/20 transition">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth={2}
                     stroke="currentColor"
-                    className="w-4 h-4"
+                    className="w-3 h-3 sm:w-4 sm:h-4"
                   >
                     <path
                       strokeLinecap="round"
@@ -188,6 +204,8 @@ function ViewDetail() {
             </div>
           </div>
         </div>
+        
+        {/* Confirm Modal */}
         <ConfirmModal
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
