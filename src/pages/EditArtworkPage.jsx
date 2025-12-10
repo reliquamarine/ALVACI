@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toastSuccess, toastError } from '../components/ToastWithProgress';
+import { toastSuccess, toastError } from "../components/ToastWithProgress";
 import uploadIconPlaceholder from "../assets/ep_upload-filled.svg";
 
 function EditArtworkPage() {
@@ -14,10 +14,12 @@ function EditArtworkPage() {
     title: "",
     artist: "",
     year: "",
-    category: "",
+    category: "Painting",
     description: "",
     image: "",
   });
+
+  const API_BASE_URL = "https://artzybackend.vercel.app";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -28,7 +30,7 @@ function EditArtworkPage() {
 
     const fetchArtwork = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/artworks/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/api/artworks/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -38,7 +40,7 @@ function EditArtworkPage() {
             title: data.title || "",
             artist: data.artist || "",
             year: data.year ? data.year.split("T")[0] : "",
-            category: data.category || "",
+            category: data.category || "Painting",
             description: data.description || "",
             image: data.image || "",
           });
@@ -92,7 +94,7 @@ function EditArtworkPage() {
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/api/artworks/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/artworks/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -112,7 +114,7 @@ function EditArtworkPage() {
 
   if (isLoading)
     return (
-      <div className="min-h-screen flex items-center justify-center text-[#442D1D] text-lg sm:text-xl">
+      <div className="min-h-screen flex items-center justify-center text-[#442D1D]">
         Loading...
       </div>
     );
@@ -139,32 +141,19 @@ function EditArtworkPage() {
       placeholder: "",
       type: "date",
     },
-    {
-      label: "Category",
-      name: "category",
-      val: formData.category,
-      placeholder: "painting, photography, digital art, etc",
-      type: "text",
-    },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col font-montserrat">
-      <main className="flex-grow w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-4 sm:py-6 md:py-8 beranda-bg">
-        {/* Page Title */}
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mt-4 sm:mt-5 md:mt-8 mb-8 sm:mb-12 md:mb-15 text-[#442D1D] px-2 sm:px-0">
-          Edit Artwork: <span className="break-words">{formData.title}</span>
+    <div className="min-h-screen flex flex-col font-montserrat beranda-bg">
+      <main className="flex-grow w-full px-4 py-6 md:px-16 md:py-8">
+        <h1 className="text-2xl md:text-4xl font-bold text-center mt-3 mb-8 md:mb-15 text-[#442D1D]">
+          Edit Artwork: {formData.title}
         </h1>
 
-        {/* Main Content Container */}
-        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 md:gap-10 lg:gap-12 h-auto lg:h-[500px] xl:h-[600px]">
-          {/* Image Upload Section */}
+        <div className="flex flex-col md:flex-row gap-8 md:gap-12 h-auto max-w-7xl mx-auto">
           <div
-            className="w-full lg:w-1/2 h-64 sm:h-80 md:h-96 lg:h-full rounded-xl sm:rounded-2xl lg:rounded-3xl border-2 border-[#442D1D] bg-[#C5B49A]/60 flex flex-col items-center justify-center cursor-pointer overflow-hidden relative hover:bg-black/5 transition p-4"
+            className="w-full md:w-1/2 min-h-[300px] md:min-h-[400px] lg:h-auto rounded-3xl border-2 border-[#442D1D] bg-[#C5B49A]/60 flex flex-col items-center justify-center cursor-pointer overflow-hidden relative hover:bg-black/5 transition"
             onClick={() => fileInputRef.current.click()}
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => e.key === 'Enter' && fileInputRef.current.click()}
           >
             <input
               type="file"
@@ -173,77 +162,89 @@ function EditArtworkPage() {
               accept="image/*"
               className="hidden"
             />
-
             {imagePreview ? (
               <img
                 src={imagePreview}
                 alt="Preview"
-                className="w-full h-full object-contain p-2 sm:p-3 md:p-4"
+                className="w-full h-full object-contain p-4"
               />
             ) : (
               <>
                 <img
                   src={uploadIconPlaceholder}
                   alt="Upload Icon"
-                  className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mb-3 sm:mb-4 opacity-70 text-[#442D1D]"
+                  className="w-16 h-16 mb-2 opacity-70 text-[#442D1D] md:w-24 md:h-24 md:mb-4"
                 />
-                <p className="text-base sm:text-lg md:text-xl font-semibold text-[#442D1D] text-center">
+                <p className="text-base font-semibold text-[#442D1D] md:text-xl">
                   Click to Change Image
-                </p>
-                <p className="text-xs sm:text-sm text-[#442D1D]/70 mt-1 sm:mt-2 text-center">
-                  Click to browse or drag and drop
                 </p>
               </>
             )}
           </div>
 
-          {/* Form Section */}
           <form
             onSubmit={handleSave}
-            className="w-full lg:w-1/2 flex flex-col justify-between font-medium text-[#442D1D] gap-4 sm:gap-5 md:gap-6"
+            className="w-full md:w-1/2 flex flex-col gap-4 font-medium text-[#442D1D]"
           >
-            {/* Input Fields Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
-              {inputFields.map((field, idx) => (
-                <div key={idx} className={`flex flex-col gap-1 sm:gap-2 ${idx === 2 || idx === 3 ? 'md:col-span-1' : ''}`}>
-                  <label className="text-sm sm:text-base md:text-lg font-bold">{field.label}</label>
-                  <input
-                    type={field.type}
-                    name={field.name}
-                    value={field.val}
-                    onChange={handleChange}
-                    placeholder={field.placeholder}
-                    className="w-full font-medium px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl outline-none placeholder-[#442D1D]/50 text-[#442D1D] transition-all duration-200 backdrop-blur-XL bg-[#442D1D]/15 border border-white/20 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent text-sm sm:text-base"
-                  />
-                </div>
-              ))}
+            {inputFields.map((field, idx) => (
+              <div key={idx} className="flex flex-col gap-1 md:gap-2">
+                <label className="text-base md:text-lg font-bold">
+                  {field.label}
+                </label>
+                <input
+                  type={field.type}
+                  name={field.name}
+                  value={field.val}
+                  onChange={handleChange}
+                  placeholder={field.placeholder}
+                  className="w-full font-medium px-4 py-2 md:px-6 md:py-3 rounded-2xl outline-none placeholder-[#442D1D]/50 text-[#442D1D] transition-all duration-200 backdrop-blur-XL bg-[#442D1D]/15 border border-white/20 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent text-sm md:text-base"
+                />
+              </div>
+            ))}
+
+            <div className="flex flex-col gap-1 md:gap-2">
+              <label className="text-base md:text-lg font-bold">Category</label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="w-full font-medium px-4 py-2 md:px-6 md:py-3 rounded-2xl outline-none text-[#442D1D] transition-all duration-200 backdrop-blur-XL bg-[#442D1D]/15 border border-white/20 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent cursor-pointer appearance-none text-sm md:text-base"
+              >
+                <option value="Painting">Painting</option>
+                <option value="Digital Art">Digital Art</option>
+                <option value="Photography">Photography</option>
+                <option value="Sketch">Sketch</option>
+                <option value="Abstract">Abstract</option>
+                <option value="Sculpture">Sculpture</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
 
-            {/* Description Field */}
-            <div className="flex flex-col gap-1 sm:gap-2">
-              <label className="text-sm sm:text-base md:text-lg font-bold">Description</label>
+            <div className="flex flex-col gap-1 md:gap-2">
+              <label className="text-base md:text-lg font-bold">
+                Description
+              </label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="optional"
-                rows="3"
-                className="w-full font-medium px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl outline-none resize-none text-[#442D1D] transition-all duration-200 backdrop-blur-XL bg-[#442D1D]/15 border border-white/20 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent text-sm sm:text-base"
+                rows="4"
+                className="w-full font-medium px-4 py-2 md:px-6 md:py-3 rounded-2xl outline-none resize-none text-[#442D1D] transition-all duration-200 backdrop-blur-XL bg-[#442D1D]/15 border border-white/20 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent text-sm md:text-base"
               />
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row justify-end gap-4 mt-4 sm:mt-5 md:mt-6">
+            <div className="flex justify-center md:justify-end gap-4 md:gap-6 mt-4">
               <button
                 type="submit"
-                className="px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 rounded-full text-[#442D1D] font-medium text-base sm:text-lg hover:scale-105 transition bg-[#f4efeb] cursor-pointer w-full sm:w-auto text-center shadow-sm hover:shadow-md"
+                className="px-6 py-2 rounded-full text-white font-medium text-base md:text-lg hover:scale-105 transition bg-[#442D1D] cursor-pointer"
               >
                 Save Changes
               </button>
               <button
                 type="button"
                 onClick={() => navigate(`/artwork/${id}`)}
-                className="px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 rounded-full text-white font-medium text-base sm:text-lg hover:scale-105 transition bg-[#442D1D] cursor-pointer w-full sm:w-auto text-center shadow-sm hover:shadow-md"
+                className="px-6 py-2 rounded-full text-[#442D1D] font-medium text-base md:text-lg hover:scale-105 transition bg-[#F4EFEB] cursor-pointer"
               >
                 Cancel
               </button>

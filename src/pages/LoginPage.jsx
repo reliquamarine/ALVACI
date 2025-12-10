@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toastSuccess, toastError } from '../components/ToastWithProgress';
 import loginBg from "../assets/Rumah Fantasi 2.png";
+import { toastSuccess, toastError } from "../components/ToastWithProgress";
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,6 +9,15 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const API_BASE_URL = "https://artzybackend.vercel.app";
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/beranda");
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +29,7 @@ function LoginPage() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -29,7 +38,7 @@ function LoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      localStorage.setItem("token", data.token); // simpen token
+      localStorage.setItem("token", data.token);
       toastSuccess("Login success!");
       navigate("/beranda");
     } catch (err) {
@@ -38,22 +47,9 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row w-full min-h-screen overflow-hidden bg-[#F4EFEB] font-montserrat">
-      {/* Image Section - Mobile First */}
-      <div className="w-full lg:w-3/5 h-48 sm:h-64 md:h-80 lg:h-full order-1">
-        <div className="w-full h-full overflow-hidden">
-          <img
-            src={loginBg}
-            alt="Login Side Art"
-            className="block w-full h-full object-cover object-center"
-          />
-        </div>
-      </div>
-
-      {/* Form Section */}
-      <div className="w-full lg:w-2/5 flex flex-col justify-center items-center px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 py-8 lg:py-0 gap-4 sm:gap-6 text-[#442D1D] relative order-2">
-        {/* Back Button */}
-        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:left-8 text-base sm:text-lg lg:text-xl w-full flex justify-start">
+    <div className="flex flex-col md:flex-row w-screen min-h-screen md:h-screen overflow-auto md:overflow-hidden bg-[#F4EFEB] font-montserrat">
+      <div className="w-full md:w-2/5 flex flex-col justify-center items-center md:items-start px-6 md:px-24 py-10 gap-4 md:gap-6 text-[#442D1D] relative min-h-screen md:min-h-0">
+        <div className="absolute top-6 left-6 md:top-8 md:left-8 text-xl">
           <Link
             to="/"
             className="flex items-center gap-1 hover:opacity-75 transition"
@@ -61,7 +57,7 @@ function LoginPage() {
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
-              className="w-5 h-4 sm:w-6 sm:h-5 stroke-current"
+              className="w-5 h-5 md:w-6 md:h-5 stroke-current"
             >
               <path
                 d="M15.75 19.5 8.25 12l7.5-7.5"
@@ -71,40 +67,37 @@ function LoginPage() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span className="text-sm sm:text-base lg:text-lg font-medium">Back</span>
+            <span className="text-base md:text-lg font-medium">Back</span>
           </Link>
         </div>
 
-        {/* Header */}
-        <div className="flex flex-col gap-1 sm:gap-2 mb-4 sm:mb-6 mt-10 sm:mt-12 lg:mt-20 w-full max-w-md items-center text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#442D1D]">
+        <div className="flex flex-col gap-1 md:gap-2 mb-4 md:mb-6 mt-0 md:mt-20 w-full items-center text-center">
+          <h1 className="text-2xl md:text-4xl font-bold text-[#442D1D]">
             Welcome to Artzy
           </h1>
-          <p className="text-base sm:text-lg text-[#442D1D] font-semibold">
+          <p className="text-sm md:text-lg text-[#442D1D] font-semibold">
             Log into your account
           </p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="w-full max-w-md flex flex-col gap-4 sm:gap-5">
-          {/* Email Field */}
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-sm flex flex-col gap-4 md:gap-5"
+        >
           <div className="flex flex-col gap-1">
-            <label className="text-sm sm:text-base lg:text-lg text-[#442D1D] font-semibold">
+            <label className="text-sm md:text-lg text-[#442D1D] font-semibold">
               Email
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 sm:px-5 py-2.5 sm:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 
-               backdrop-blur-XL bg-[#442D1D]/25 border border-white/50 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent text-sm sm:text-base"
+              className="w-full px-5 py-2 md:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 backdrop-blur-XL bg-[#442D1D]/25 border border-white/50 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent"
               placeholder="user@gmail.com"
             />
           </div>
-
-          {/* Password Field */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm sm:text-base lg:text-lg text-[#442D1D] font-semibold">
+            <label className="text-sm md:text-lg text-[#442D1D] font-semibold">
               Password
             </label>
             <div className="relative w-full">
@@ -112,19 +105,17 @@ function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 sm:px-5 py-2.5 sm:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 
-                 backdrop-blur-XL bg-[#442D1D]/25 border border-white/50 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent text-sm sm:text-base pr-10 sm:pr-12"
+                className="w-full px-5 py-2 md:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 backdrop-blur-XL bg-[#442D1D]/25 border border-white/50 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent"
                 placeholder="••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-3 sm:right-5 flex items-center text-[#442D1D] cursor-pointer hover:scale-110 transition duration-300 ease-in-out"
+                className="absolute inset-y-0 right-5 flex items-center text-[#442D1D] cursor-pointer hover:scale-110 transition duration-300 ease-in-out"
               >
                 {showPassword ? (
-                  // Mata terbuka → ketutup (ada garis slash)
                   <svg
-                    className="w-4 h-4 sm:w-5 sm:h-5"
+                    className="w-4 h-4 md:w-5 md:h-5"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -134,9 +125,8 @@ function LoginPage() {
                     <path d="M2.25 2.25l19.5 19.5" strokeLinecap="round" />
                   </svg>
                 ) : (
-                  // Mata tertutup → terbuka
                   <svg
-                    className="w-4 h-4 sm:w-5 sm:h-5"
+                    className="w-4 h-4 md:w-5 md:h-5"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -150,35 +140,31 @@ function LoginPage() {
             </div>
           </div>
 
-          {/* Forgot Password Link */}
           <button
             type="button"
             onClick={() => navigate("/forgot-password")}
-            className="self-start text-xs sm:text-sm hover:underline text-[#442D1D] font-medium cursor-pointer mt-1"
+            className="self-start text-xs md:text-sm hover:underline text-[#442D1D] font-medium cursor-pointer"
           >
             Forgot Password
           </button>
 
-          {/* Error Message */}
           {error && (
             <div
-              className="text-xs sm:text-sm text-red-600 font-medium p-2 rounded text-center"
+              className="text-xs md:text-sm text-red-600 font-medium p-2 rounded text-center"
               role="alert"
             >
               {error}
             </div>
           )}
 
-          {/* Login Button */}
           <button
             type="submit"
-            className="py-2.5 sm:py-3 rounded-full font-medium text-base sm:text-lg shadow-md hover:scale-[1.02] transition w-full bg-[#442D1D] text-white cursor-pointer mt-2"
+            className="py-2 md:py-3 rounded-full font-medium text-base md:text-lg shadow-md hover:scale-[1.02] transition w-full bg-[#442D1D] text-white cursor-pointer"
           >
             Login
           </button>
 
-          {/* Register Link */}
-          <p className="text-xs sm:text-sm mt-3 text-center text-[#442D1D]">
+          <p className="text-xs md:text-sm mt-3 text-center text-[#442D1D]">
             Don't have an account?{" "}
             <Link
               to="/register"
@@ -188,6 +174,16 @@ function LoginPage() {
             </Link>
           </p>
         </form>
+      </div>
+
+      <div className="hidden md:block w-3/5 h-full">
+        <div className="w-full h-full overflow-hidden">
+          <img
+            src={loginBg}
+            alt="Login Side Art"
+            className="block w-full h-full object-cover"
+          />
+        </div>
       </div>
     </div>
   );

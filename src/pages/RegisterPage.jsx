@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toastSuccess, toastError } from '../components/ToastWithProgress';
 import registerBg from "../assets/Rumah Fantasi 2.png";
+import { toastSuccess, toastError } from "../components/ToastWithProgress";
 
 function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -12,6 +12,8 @@ function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const API_BASE_URL = "https://artzybackend.vercel.app";
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -38,7 +40,7 @@ function RegisterPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),
@@ -47,7 +49,6 @@ function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error || "Failed to Register");
-
       toastSuccess("Register success! Please login.");
       navigate("/login");
     } catch (err) {
@@ -56,11 +57,9 @@ function RegisterPage() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row w-full min-h-screen font-montserrat bg-[#F4EFEB]">
-      {/* Form Section - Mobile First */}
-      <div className="w-full lg:w-2/5 flex flex-col justify-center items-center px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 py-8 lg:py-0 gap-4 sm:gap-6 relative text-[#442D1D] order-2 lg:order-1">
-        {/* Back Button */}
-        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:left-8 text-base sm:text-lg lg:text-xl w-full flex justify-start">
+    <div className="flex flex-col md:flex-row w-screen min-h-screen md:h-screen overflow-auto md:overflow-hidden font-montserrat bg-[#F4EFEB]">
+      <div className="w-full md:w-2/5 flex flex-col justify-center items-center md:items-start px-6 md:px-24 py-10 gap-4 md:gap-6 relative text-[#442D1D] min-h-screen md:min-h-0">
+        <div className="absolute top-6 left-6 md:top-8 md:left-8 text-xl">
           <Link
             to="/"
             className="flex items-center gap-1 hover:opacity-75 transition"
@@ -68,7 +67,7 @@ function RegisterPage() {
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
-              className="w-5 h-4 sm:w-6 sm:h-5 stroke-current"
+              className="w-5 h-5 md:w-6 md:h-5 stroke-current"
             >
               <path
                 d="M15.75 19.5 8.25 12l7.5-7.5"
@@ -78,14 +77,13 @@ function RegisterPage() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span className="text-sm sm:text-base lg:text-lg font-medium">Back</span>
+            <span className="text-base md:text-lg font-medium">Back</span>
           </Link>
         </div>
 
-        {/* Header */}
-        <div className="flex flex-col gap-1 sm:gap-2 mb-2 sm:mb-4 mt-8 sm:mt-10 w-full max-w-md items-center text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Create an account</h1>
-          <p className="text-xs sm:text-sm font-medium">
+        <div className="flex flex-col gap-1 md:gap-2 mb-4 mt-0 md:mt-10 w-full items-center text-center">
+          <h1 className="text-2xl md:text-4xl font-bold">Create an account</h1>
+          <p className="text-xs md:text-sm font-medium">
             Already have an account?{" "}
             <Link to="/login" className="font-bold hover:underline">
               Sign in
@@ -93,161 +91,146 @@ function RegisterPage() {
           </p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleRegister} className="w-full max-w-md flex flex-col gap-3 sm:gap-4">
-          {/* Username */}
+        <form
+          onSubmit={handleRegister}
+          className="w-full max-w-sm flex flex-col gap-4"
+        >
           <div className="flex flex-col gap-1">
-            <label className="text-sm sm:text-base font-semibold">Username</label>
+            <label className="text-sm md:text-base font-semibold">
+              Username
+            </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 sm:px-5 py-2.5 sm:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 
-               backdrop-blur-lg bg-[#442D1D]/20 border border-white/60 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent text-sm sm:text-base"
+              className="w-full px-5 py-2 md:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 backdrop-blur-lg bg-[#442D1D]/20 border border-white/60 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent"
               placeholder="LoremKece25"
             />
           </div>
 
-          {/* Email */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm sm:text-base font-semibold">Email</label>
+            <label className="text-sm md:text-base font-semibold">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 sm:px-5 py-2.5 sm:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 
-               backdrop-blur-lg bg-[#442D1D]/20 border border-white/60 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent text-sm sm:text-base"
+              className="w-full px-5 py-2 md:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 backdrop-blur-lg bg-[#442D1D]/20 border border-white/60 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent"
               placeholder="user@gmail.com"
             />
           </div>
 
-          {/* Password */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm sm:text-base font-semibold">Password</label>
+            <label className="text-sm md:text-base font-semibold">
+              Password
+            </label>
             <div className="relative w-full">
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 sm:px-5 py-2.5 sm:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 
-                 backdrop-blur-lg bg-[#442D1D]/20 border border-white/60 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent text-sm sm:text-base pr-10 sm:pr-12"
+                className="w-full px-5 py-2 md:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 backdrop-blur-lg bg-[#442D1D]/20 border border-white/60 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent"
                 placeholder="••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-3 sm:right-5 flex items-center text-[#442D1D] cursor-pointer hover:scale-110 transition duration-300 ease-in-out"
+                className="absolute inset-y-0 right-5 flex items-center text-[#442D1D] cursor-pointer hover:scale-110 transition duration-300 ease-in-out"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  className="w-4 h-4 sm:w-5 sm:h-5 fill-none stroke-current"
-                >
-                  {showPassword ? (
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M2.25 12s2.25-6 9.75-6 9.75 6 9.75 6-2.25 6-9.75 6-9.75-6-9.75-6z" />
-                      <path d="M2.25 2.25l19.5 19.5" strokeLinecap="round" />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M2.25 12s2.25-6 9.75-6 9.75 6 9.75 6-2.25 6-9.75 6-9.75-6-9.75-6z" />
-                      <circle cx="12" cy="12" r="2.25" />
-                    </svg>
-                  )}
-                </svg>
+                {showPassword ? (
+                  <svg
+                    className="w-4 h-4 md:w-5 md:h-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M2.25 12s2.25-6 9.75-6 9.75 6 9.75 6-2.25 6-9.75 6-9.75-6-9.75-6z" />
+                    <path d="M2.25 2.25l19.5 19.5" strokeLinecap="round" />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-4 h-4 md:w-5 md:h-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M2.25 12s2.25-6 9.75-6 9.75 6 9.75 6-2.25 6-9.75 6-9.75-6-9.75-6z" />
+                    <circle cx="12" cy="12" r="2.25" />
+                  </svg>
+                )}
               </button>
             </div>
           </div>
 
-          {/* Confirm Password */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm sm:text-base font-semibold">Confirm Password</label>
+            <label className="text-sm md:text-base font-semibold">
+              Confirm Password
+            </label>
             <div className="relative w-full">
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 sm:px-5 py-2.5 sm:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 
-                 backdrop-blur-lg bg-[#442D1D]/20 border border-white/60 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent text-sm sm:text-base pr-10 sm:pr-12"
+                className="w-full px-5 py-2 md:py-3 rounded-full outline-none placeholder:text-[#9A8D83] transition-all duration-200 backdrop-blur-lg bg-[#442D1D]/20 border border-white/60 focus:ring-2 focus:ring-[#442D1D] focus:bg-transparent"
                 placeholder="••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-3 sm:right-5 flex items-center text-[#442D1D] cursor-pointer hover:scale-110 transition duration-300 ease-in-out"
+                className="absolute inset-y-0 right-5 flex items-center text-[#442D1D] cursor-pointer hover:scale-110 transition duration-300 ease-in-out"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  className="w-4 h-4 sm:w-5 sm:h-5 fill-none stroke-current"
-                >
-                  {showConfirmPassword ? (
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M2.25 12s2.25-6 9.75-6 9.75 6 9.75 6-2.25 6-9.75 6-9.75-6-9.75-6z" />
-                      <path d="M2.25 2.25l19.5 19.5" strokeLinecap="round" />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M2.25 12s2.25-6 9.75-6 9.75 6 9.75 6-2.25 6-9.75 6-9.75-6-9.75-6z" />
-                      <circle cx="12" cy="12" r="2.25" />
-                    </svg>
-                  )}
-                </svg>
+                {showConfirmPassword ? (
+                  <svg
+                    className="w-4 h-4 md:w-5 md:h-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M2.25 12s2.25-6 9.75-6 9.75 6 9.75 6-2.25 6-9.75 6-9.75-6-9.75-6z" />
+                    <path d="M2.25 2.25l19.5 19.5" strokeLinecap="round" />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-4 h-4 md:w-5 md:h-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M2.25 12s2.25-6 9.75-6 9.75 6 9.75 6-2.25 6-9.75 6-9.75-6-9.75-6z" />
+                    <circle cx="12" cy="12" r="2.25" />
+                  </svg>
+                )}
               </button>
             </div>
           </div>
 
-          {/* Error Message */}
           {error && (
             <div
-              className="text-xs sm:text-sm text-red-600 font-medium p-2 rounded text-center"
+              className="text-xs md:text-sm text-red-600 font-medium p-2 rounded text-center"
               role="alert"
             >
               {error}
             </div>
           )}
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="py-2.5 sm:py-3 rounded-full font-medium text-base sm:text-lg shadow-md hover:scale-[1.02] transition w-full text-white bg-[#442D1D] cursor-pointer mt-2"
+            className="py-2 md:py-3 rounded-full font-medium text-base md:text-lg shadow-md hover:scale-[1.02] transition w-full text-white bg-[#442D1D] cursor-pointer"
           >
             Create an account
           </button>
         </form>
       </div>
 
-      {/* Image Section */}
-      <div className="w-full lg:w-3/5 h-48 sm:h-64 md:h-80 lg:h-full order-1 lg:order-2">
+      <div className="hidden md:block w-3/5 h-full">
         <div className="w-full h-full overflow-hidden">
           <img
             src={registerBg}
             alt="Register Side Art"
-            className="block w-full h-full object-cover object-center"
+            className="block w-full h-full object-cover"
           />
         </div>
       </div>
